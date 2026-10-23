@@ -1,0 +1,12 @@
+﻿namespace Escola.Domain.Interfaces;
+
+using Escola.Domain.Entities;
+
+public interface INota
+{
+    Task<Nota> GetByIdAsync(int id);
+    Task<List<Nota>> GetAllAsync();
+    Task<Nota> AddAsync(Nota nota);
+    Task<Nota> UpdateAsync(Nota nota);
+    Task<Nota> DeleteAsync(int id);
+}
