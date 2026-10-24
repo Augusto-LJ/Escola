@@ -3,7 +3,7 @@ using Escola.Domain.Interfaces;
 
 namespace Escola.Infra.Data.Repositories;
 
-public class MatriculaRepository : IMatricula
+public class MatriculaRepository : IMatriculaRepository
 {
     public Task<Matricula> AddAsync(Matricula matricula)
     {

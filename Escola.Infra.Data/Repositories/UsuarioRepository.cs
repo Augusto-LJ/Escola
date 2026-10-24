@@ -3,7 +3,7 @@ using Escola.Domain.Interfaces;
 
 namespace Escola.Infra.Data.Repositories;
 
-public class UsuarioRepository : IUsuario
+public class UsuarioRepository : IUsuarioRepository
 {
     public Task<Usuario> AddAsync(Usuario usuario)
     {

@@ -3,7 +3,7 @@ using Escola.Domain.Interfaces;
 
 namespace Escola.Infra.Data.Repositories;
 
-public class NotaRepository : INota
+public class NotaRepository : INotaRepository
 {
     public Task<Nota> AddAsync(Nota nota)
     {

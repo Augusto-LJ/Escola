@@ -3,7 +3,7 @@ using Escola.Domain.Interfaces;
 
 namespace Escola.Infra.Data.Repositories;
 
-public class TurmaRepository : ITurma
+public class TurmaRepository : ITurmaRepository
 {
     public Task<Turma> AddAsync(Turma turma)
     {
