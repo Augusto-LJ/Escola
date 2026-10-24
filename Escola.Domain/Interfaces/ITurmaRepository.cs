@@ -2,7 +2,7 @@
 
 using Escola.Domain.Entities;
 
-public interface ITurma
+public interface ITurmaRepository
 {
     Task<Turma> GetByIdAsync(int id);
     Task<List<Turma>> GetAllAsync();

@@ -2,7 +2,7 @@
 
 using Escola.Domain.Entities;
 
-public interface INota
+public interface INotaRepository
 {
     Task<Nota> GetByIdAsync(int id);
     Task<List<Nota>> GetAllAsync();

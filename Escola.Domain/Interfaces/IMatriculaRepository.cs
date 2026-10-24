@@ -2,7 +2,7 @@
 
 using Escola.Domain.Entities;
 
-public interface IMatricula
+public interface IMatriculaRepository
 {
     Task<Matricula> GetByIdAsync(int id);
     Task<List<Matricula>> GetAllAsync();

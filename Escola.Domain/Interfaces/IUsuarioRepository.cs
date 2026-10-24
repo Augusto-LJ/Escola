@@ -2,7 +2,7 @@
 
 using Escola.Domain.Entities;
 
-public interface IUsuario
+public interface IUsuarioRepository
 {
     Task<Usuario> GetByIdAsync(int id);
     Task<List<Usuario>> GetAllAsync();
