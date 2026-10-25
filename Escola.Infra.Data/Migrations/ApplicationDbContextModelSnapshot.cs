@@ -30,6 +30,9 @@ namespace Escola.Infra.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -54,6 +57,9 @@ namespace Escola.Infra.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Ativa")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("DataExpiracao")
@@ -88,6 +94,12 @@ namespace Escola.Infra.Data.Migrations
                     b.Property<bool>("Aprovado")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("DataNota")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("MatriculaId")
                         .HasColumnType("integer");
 
@@ -108,6 +120,9 @@ namespace Escola.Infra.Data.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("CursoId")
                         .HasColumnType("integer");
@@ -136,6 +151,9 @@ namespace Escola.Infra.Data.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Email")
                         .IsRequired()

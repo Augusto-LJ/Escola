@@ -1,32 +1,51 @@
 ﻿using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
+using Escola.Infra.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Escola.Infra.Data.Repositories;
 
-public class MatriculaRepository : IMatriculaRepository
+public class MatriculaRepository(ApplicationDbContext context) : IMatriculaRepository
 {
-    public Task<Matricula> AddAsync(Matricula matricula)
+    private readonly ApplicationDbContext _context = context;
+
+    public async Task<Matricula> AddAsync(Matricula matricula)
     {
-        throw new NotImplementedException();
+        _context.Matriculas.Add(matricula);
+        await _context.SaveChangesAsync();
+
+        return matricula;
     }
 
-    public Task<Matricula> DeleteAsync(int id)
+    public async Task<Matricula> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var matricula = await _context.Matriculas.Where(x => x.Ativo).FirstOrDefaultAsync(c => c.Id == id);
+
+        if (matricula is null)
+            return null;
+
+        matricula.Ativo = false;
+        _context.Matriculas.Update(matricula);
+        await _context.SaveChangesAsync();
+
+        return matricula;
     }
 
-    public Task<List<Matricula>> GetAllAsync()
+    public async Task<List<Matricula>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.Matriculas.Where(x => x.Ativo).ToListAsync();
     }
 
-    public Task<Matricula> GetByIdAsync(int id)
+    public async Task<Matricula> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Matriculas.Where(x => x.Ativo).FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public Task<Matricula> UpdateAsync(Matricula matricula)
+    public async Task<Matricula> UpdateAsync(Matricula matricula)
     {
-        throw new NotImplementedException();
+        _context.Matriculas.Update(matricula);
+        await _context.SaveChangesAsync();
+
+        return matricula;
     }
 }

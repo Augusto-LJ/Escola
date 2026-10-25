@@ -1,32 +1,51 @@
 ﻿using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
+using Escola.Infra.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Escola.Infra.Data.Repositories;
 
-public class CursoRepository : ICursoRepository
+public class CursoRepository(ApplicationDbContext context) : ICursoRepository
 {
-    public Task<Curso> AddAsync(Curso curso)
+    private readonly ApplicationDbContext _context = context;
+
+    public async Task<Curso> AddAsync(Curso curso)
     {
-        throw new NotImplementedException();
+        _context.Cursos.Add(curso);
+        await _context.SaveChangesAsync();
+
+        return curso;
     }
 
-    public Task<Curso> DeleteAsync(int id)
+    public async Task<Curso> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var curso = await _context.Cursos.Where(x => x.Ativo).FirstOrDefaultAsync(c => c.Id == id);
+
+        if (curso is null)
+            return null;
+
+        curso.Ativo = false;
+        _context.Cursos.Update(curso);
+        await _context.SaveChangesAsync();
+
+        return curso;
     }
 
-    public Task<List<Curso>> GetAllAsync()
+    public async Task<List<Curso>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.Cursos.Where(x => x.Ativo).ToListAsync();
     }
 
-    public Task<Curso> GetByIdAsync(int id)
+    public async Task<Curso> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Cursos.Where(x => x.Ativo).FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public Task<Curso> UpdateAsync(Curso curso)
+    public async Task<Curso> UpdateAsync(Curso curso)
     {
-        throw new NotImplementedException();
+        _context.Cursos.Update(curso);
+        await _context.SaveChangesAsync();
+
+        return curso;
     }
 }

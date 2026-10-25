@@ -1,32 +1,51 @@
 ﻿using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
+using Escola.Infra.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Escola.Infra.Data.Repositories;
 
-public class UsuarioRepository : IUsuarioRepository
+public class UsuarioRepository(ApplicationDbContext context) : IUsuarioRepository
 {
-    public Task<Usuario> AddAsync(Usuario usuario)
+    private readonly ApplicationDbContext _context = context;
+
+    public async Task<Usuario> AddAsync(Usuario usuario)
     {
-        throw new NotImplementedException();
+        _context.Usuarios.Add(usuario);
+        await _context.SaveChangesAsync();
+
+        return usuario;
     }
 
-    public Task<Usuario> DeleteAsync(int id)
+    public async Task<Usuario> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var usuario = await _context.Usuarios.Where(x => x.Ativo).FirstOrDefaultAsync(c => c.Id == id);
+
+        if (usuario is null)
+            return null;
+
+        usuario.Ativo = false;
+        _context.Usuarios.Update(usuario);
+        await _context.SaveChangesAsync();
+
+        return usuario;
     }
 
-    public Task<List<Usuario>> GetAllAsync()
+    public async Task<List<Usuario>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.Usuarios.Where(x => x.Ativo).ToListAsync();
     }
 
-    public Task<Usuario> GetByIdAsync(int id)
+    public async Task<Usuario> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Usuarios.Where(x => x.Ativo).FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public Task<Usuario> UpdateAsync(Usuario usuario)
+    public async Task<Usuario> UpdateAsync(Usuario usuario)
     {
-        throw new NotImplementedException();
+        _context.Usuarios.Update(usuario);
+        await _context.SaveChangesAsync();
+
+        return usuario;
     }
 }

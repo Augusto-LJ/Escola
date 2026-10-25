@@ -5,6 +5,7 @@ public class Matricula
     public int Id { get; set; }
     public int UsuarioId { get; set; }
     public int TurmaId { get; set; }
+    public bool Ativo { get; set; }
     public DateTime DataMatricula { get; set; }
     public DateTime DataExpiracao { get; set; }
     public bool Ativa { get; set; }
