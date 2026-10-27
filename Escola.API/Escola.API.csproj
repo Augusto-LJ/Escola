@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Escola.Infra.IoC\Escola.Infra.IoC.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
