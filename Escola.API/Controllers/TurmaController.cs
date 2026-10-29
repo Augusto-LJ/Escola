@@ -53,4 +53,15 @@ public class TurmaController(ITurmaService turmaService) : Controller
 
         return Ok(turma);
     }
+
+    [HttpGet]
+    public async Task<ActionResult> GetAllTurmas()
+    {
+        var turmas = await _turmaService.GetAllAsync();
+
+        if (turmas == null || turmas.Count == 0)
+            return NotFound("Nenhuma turma encontrada");
+
+        return Ok(turmas);
+    }
 }

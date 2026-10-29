@@ -33,12 +33,18 @@ public class TurmaRepository(ApplicationDbContext context) : ITurmaRepository
 
     public async Task<List<Turma>> GetAllAsync()
     {
-        return await _context.Turmas.Where(x => x.Ativo).ToListAsync();
+        return await _context.Turmas
+            .Include(x => x.Curso)
+            .Where(x => x.Ativo)
+            .ToListAsync();
     }
 
     public async Task<Turma> GetByIdAsync(int id)
     {
-        return await _context.Turmas.Where(x => x.Ativo).FirstOrDefaultAsync(c => c.Id == id);
+        return await _context.Turmas
+            .Include(x => x.Curso)
+            .Where(x => x.Ativo)
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<Turma> UpdateAsync(Turma turma)
