@@ -14,10 +14,6 @@ public class TurmaController(ITurmaService turmaService) : Controller
     public async Task<ActionResult> CreateTurma(TurmaPostDTO turma)
     {
         var turmaCriada = await _turmaService.AddAsync(turma);
-
-        if (turmaCriada == null)
-            return BadRequest("Não foi possível criar a turma");
-
         return Ok(new { message = "Turma criada com sucesso" });
     }
 
@@ -25,10 +21,6 @@ public class TurmaController(ITurmaService turmaService) : Controller
     public async Task<ActionResult> UpdateTurma(TurmaPutDTO turma)
     {
         var turmaAtualizada = await _turmaService.UpdateAsync(turma);
-
-        if (turmaAtualizada == null)
-            return BadRequest("Não foi possível atualizar a turma");
-
         return Ok(new { message = "Turma atualizada com sucesso" });
     }
 
@@ -36,10 +28,6 @@ public class TurmaController(ITurmaService turmaService) : Controller
     public async Task<ActionResult> DeleteTurma(int id)
     {
         var turmaDeletada = await _turmaService.DeleteAsync(id);
-
-        if (turmaDeletada == null)
-            return BadRequest("Não foi possível deletar a turma");
-
         return Ok(new { message = "Turma deletada com sucesso" });
     }
 
@@ -47,10 +35,6 @@ public class TurmaController(ITurmaService turmaService) : Controller
     public async Task<ActionResult> GetTurmaById(int id)
     {
         var turma = await _turmaService.GetByIdAsync(id);
-
-        if (turma == null)
-            return NotFound("Turma não encontrada");
-
         return Ok(turma);
     }
 
@@ -58,10 +42,6 @@ public class TurmaController(ITurmaService turmaService) : Controller
     public async Task<ActionResult> GetAllTurmas()
     {
         var turmas = await _turmaService.GetAllAsync();
-
-        if (turmas == null || turmas.Count == 0)
-            return NotFound("Nenhuma turma encontrada");
-
         return Ok(turmas);
     }
 }

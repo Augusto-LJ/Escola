@@ -1,4 +1,5 @@
 ﻿using Escola.Application.DTOs.Curso;
+using Escola.Application.Exceptions;
 using Escola.Application.Interfaces;
 using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
@@ -17,7 +18,7 @@ public class CursoService(ICursoRepository cursoRepository) : ICursoService
             Descricao = curso.Descricao,
         };
 
-        var cursoAdicionado = await _cursoRepository.AddAsync(novoCurso);
+        var cursoAdicionado = await _cursoRepository.AddAsync(novoCurso) ?? throw new BadRequestException("Não foi possível criar o curso");
 
         return new CursoGetDTO
         {
@@ -29,10 +30,7 @@ public class CursoService(ICursoRepository cursoRepository) : ICursoService
 
     public async Task<CursoGetDTO> DeleteAsync(int id)
     {
-        var cursoDeletado = await _cursoRepository.DeleteAsync(id);
-
-        if (cursoDeletado == null)
-            return null;
+        var cursoDeletado = await _cursoRepository.DeleteAsync(id) ?? throw new NotFoundException("Curso não encontrado.");
 
         return new CursoGetDTO
         {
@@ -59,10 +57,7 @@ public class CursoService(ICursoRepository cursoRepository) : ICursoService
 
     public async Task<CursoGetDTO> GetByIdAsync(int id)
     {
-        var curso = await _cursoRepository.GetByIdAsync(id);
-
-        if (curso == null)
-            return null;
+        var curso = await _cursoRepository.GetByIdAsync(id) ?? throw new NotFoundException("Curso não encontrado.");
 
         return new CursoGetDTO
         {
@@ -74,17 +69,13 @@ public class CursoService(ICursoRepository cursoRepository) : ICursoService
 
     public async Task<CursoGetDTO> UpdateAsync(CursoPutDTO curso)
     {
-        var cursoParaAtualizar = new Curso
-        {
-            Id = curso.Id,
-            Nome = curso.Nome,
-            Descricao = curso.Descricao
-        };
+        var cursoExistente = await _cursoRepository.GetByIdAsync(curso.Id) ?? throw new NotFoundException("Curso não encontrado");
 
-        var cursoAtualizado = await _cursoRepository.UpdateAsync(cursoParaAtualizar);
+        cursoExistente.Id = curso.Id;
+        cursoExistente.Nome = curso.Nome;
+        cursoExistente.Descricao = curso.Descricao;
 
-        if (cursoAtualizado == null)
-            return null;
+        var cursoAtualizado = await _cursoRepository.UpdateAsync(cursoExistente) ?? throw new BadRequestException("Não foi possível atualizar o curso");
 
         return new CursoGetDTO
         {

@@ -14,10 +14,6 @@ public class NotaController(INotaService notaService) : Controller
     public async Task<ActionResult> CreateNota(NotaPostDTO nota)
     {
         var notaCriada = await _notaService.AddAsync(nota);
-
-        if (notaCriada == null)
-            return BadRequest("Não foi possível criar a nota");
-
         return Ok(new { message = "Nota criada com sucesso" });
     }
 
@@ -25,10 +21,6 @@ public class NotaController(INotaService notaService) : Controller
     public async Task<ActionResult> UpdateNota(NotaPutDTO nota)
     {
         var notaAtualizada = await _notaService.UpdateAsync(nota);
-
-        if (notaAtualizada == null)
-            return BadRequest("Não foi possível atualizar a nota");
-
         return Ok(new { message = "Nota atualizada com sucesso" });
     }
 
@@ -36,10 +28,6 @@ public class NotaController(INotaService notaService) : Controller
     public async Task<ActionResult> DeleteNota(int id)
     {
         var notaDeletada = await _notaService.DeleteAsync(id);
-
-        if (notaDeletada == null)
-            return BadRequest("Não foi possível deletar a nota");
-
         return Ok(new { message = "Nota deletada com sucesso" });
     }
 
@@ -47,10 +35,6 @@ public class NotaController(INotaService notaService) : Controller
     public async Task<ActionResult> GetNotaById(int id)
     {
         var nota = await _notaService.GetByIdAsync(id);
-
-        if (nota == null)
-            return NotFound("Nota não encontrada");
-
         return Ok(nota);
     }
 
@@ -58,10 +42,6 @@ public class NotaController(INotaService notaService) : Controller
     public async Task<ActionResult> GetAllNotas()
     {
         var notas = await _notaService.GetAllAsync();
-
-        if (notas == null || notas.Count == 0)
-            return NotFound("Nenhuma nota encontrada");
-
         return Ok(notas);
     }
 }

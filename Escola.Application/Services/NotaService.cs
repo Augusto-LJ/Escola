@@ -1,25 +1,29 @@
 ﻿namespace Escola.Application.Services;
 
 using Escola.Application.DTOs.Nota;
+using Escola.Application.Exceptions;
 using Escola.Application.Interfaces;
 using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
 
-public class NotaService(INotaRepository notaRepository) : INotaService
+public class NotaService(INotaRepository notaRepository, IMatriculaRepository matriculaRepository) : INotaService
 {
     private readonly INotaRepository _notaRepository = notaRepository;
+    private readonly IMatriculaRepository _matriculaRepository = matriculaRepository;
 
     public async Task<NotaGetDTO> AddAsync(NotaPostDTO nota)
     {
+        var matriculaExistente = await _matriculaRepository.GetByIdAsync(nota.MatriculaId) ?? throw new NotFoundException("Matrícula não encontrada");
+
         var novaNota = new Nota
         {
-            MatriculaId = nota.MatriculaId,
+            MatriculaId = matriculaExistente.Id,
             ValorNota = nota.ValorNota,
             Aprovado = nota.ValorNota >= 60,
             Ativo = true
         };
 
-        var notaCriada = await _notaRepository.AddAsync(novaNota);
+        var notaCriada = await _notaRepository.AddAsync(novaNota) ?? throw new BadRequestException("Não foi possível criar a nota");
 
         return new NotaGetDTO
         {
@@ -33,10 +37,7 @@ public class NotaService(INotaRepository notaRepository) : INotaService
 
     public async Task<NotaGetDTO> DeleteAsync(int id)
     {
-        var notaDeletada = await _notaRepository.DeleteAsync(id);
-
-        if (notaDeletada == null)
-            return null;
+        var notaDeletada = await _notaRepository.DeleteAsync(id) ?? throw new NotFoundException("Não foi possível encontrar a nota.");
 
         return new NotaGetDTO
         {
@@ -68,36 +69,31 @@ public class NotaService(INotaRepository notaRepository) : INotaService
 
     public async Task<NotaGetDTO> GetByIdAsync(int id)
     {
-        var nota = await _notaRepository.GetByIdAsync(id);
-
-        if (nota == null)
-            return null;
+        var matriculaExistente = await _matriculaRepository.GetByIdAsync(id) ?? throw new NotFoundException("Matrícula não encontrada");
+        var notaExistente = await _notaRepository.GetByIdAsync(id) ?? throw new NotFoundException("Nota não encontrada");
 
         return new NotaGetDTO
         {
-            Id = nota.Id,
-            MatriculaId = nota.MatriculaId,
-            ValorNota = nota.ValorNota,
-            Aprovado = nota.Aprovado,
-            DataNota = nota.DataNota
+            Id = notaExistente.Id,
+            MatriculaId = matriculaExistente.Id,
+            ValorNota = notaExistente.ValorNota,
+            Aprovado = notaExistente.Aprovado,
+            DataNota = notaExistente.DataNota
         };
     }
 
     public async Task<NotaGetDTO> UpdateAsync(NotaPutDTO nota)
     {
-        var notaParaAtualizar = new Nota
-        {
-            Id = nota.Id,
-            MatriculaId = nota.MatriculaId,
-            ValorNota = nota.ValorNota,
-            Aprovado = nota.ValorNota >= 60,
-            Ativo = true
-        };
+        var notaExistente = await _notaRepository.GetByIdAsync(nota.Id) ?? throw new NotFoundException("Nota não encontrada");
+        var matriculaExistente = await _matriculaRepository.GetByIdAsync(nota.MatriculaId) ?? throw new NotFoundException("Matrícula não encontrada");
 
-        var notaAtualizada = await _notaRepository.UpdateAsync(notaParaAtualizar);
+        notaExistente.Id = nota.Id;
+        notaExistente.MatriculaId = matriculaExistente.Id;
+        notaExistente.ValorNota = nota.ValorNota;
+        notaExistente.Aprovado = nota.ValorNota >= 60;
+        notaExistente.Ativo = true;
 
-        if (notaAtualizada == null)
-            return null;
+        var notaAtualizada = await _notaRepository.UpdateAsync(notaExistente) ?? throw new BadRequestException("Não foi possível atualizar a nota");
 
         return new NotaGetDTO
         {
