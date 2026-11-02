@@ -33,7 +33,8 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
         {
             Id = usuarioCriado.Id,
             Nome = usuarioCriado.Nome,
-            Email = usuarioCriado.Email
+            Email = usuarioCriado.Email,
+            Perfil = usuarioCriado.Perfil
         };
     }
 
@@ -48,7 +49,8 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
         {
             Id = usuarioDeletado.Id,
             Nome = usuarioDeletado.Nome,
-            Email = usuarioDeletado.Email
+            Email = usuarioDeletado.Email,
+            Perfil = usuarioDeletado.Perfil
         };
     }
 
@@ -84,7 +86,8 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
         {
             Id = usuario.Id,
             Nome = usuario.Nome,
-            Email = usuario.Email
+            Email = usuario.Email,
+            Perfil = usuario.Perfil
         };
     }
 
@@ -106,7 +109,8 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
         {
             Id = usuarioAtualizado.Id,
             Nome = usuarioAtualizado.Nome,
-            Email = usuarioAtualizado.Email
+            Email = usuarioAtualizado.Email,
+            Perfil = usuarioAtualizado.Perfil
         };
     }
 }
