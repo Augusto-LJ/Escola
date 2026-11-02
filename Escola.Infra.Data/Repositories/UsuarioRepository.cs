@@ -31,6 +31,11 @@ public class UsuarioRepository(ApplicationDbContext context) : IUsuarioRepositor
         return usuario;
     }
 
+    public async Task<bool> ExisteUsuarioAsync()
+    {
+        return await _context.Usuarios.AnyAsync(x => x.Ativo);
+    }
+
     public async Task<List<Usuario>> GetAllAsync()
     {
         return await _context.Usuarios.Where(x => x.Ativo).ToListAsync();

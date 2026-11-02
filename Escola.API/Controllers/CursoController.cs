@@ -9,6 +9,7 @@ namespace Escola.API.Controllers;
 public class CursoController(ICursoService cursoService) : Controller
 {
     private readonly ICursoService _cursoService = cursoService;
+
     [HttpPost]
     public async Task<ActionResult> CreateCurso(CursoPostDTO curso)
     {

@@ -1,7 +1,5 @@
 ﻿namespace Escola.Application.Services;
 
-using Escola.Application.DTOs.Curso;
-using Escola.Application.DTOs.Turma;
 using Escola.Application.DTOs.Usuario;
 using Escola.Application.Interfaces;
 using Escola.Domain.Entities;
@@ -17,13 +15,14 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
         using var hmac = new HMACSHA512();
         byte[] senhaHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(usuario.Senha));
         byte[] senhaSalt = hmac.Key;
+        var existeAlgumUsuario = await _usuarioRepository.ExisteUsuarioAsync();
 
         var novoUsuario = new Usuario
         {
             Nome = usuario.Nome,
             Email = usuario.Email,
             Ativo = true,
-            Perfil = "Aluno",
+            Perfil = existeAlgumUsuario ? "Aluno" : "Administrador",
             PasswordHash = senhaHash,
             PasswordSalt = senhaSalt
         };
@@ -51,6 +50,11 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
             Nome = usuarioDeletado.Nome,
             Email = usuarioDeletado.Email
         };
+    }
+
+    public async Task<bool> ExisteUsuarioAsync()
+    {
+        return await _usuarioRepository.ExisteUsuarioAsync();
     }
 
     public async Task<List<UsuarioGetDTO>> GetAllAsync()
