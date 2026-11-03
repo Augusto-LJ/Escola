@@ -63,8 +63,8 @@ public class AuthenticateService(ApplicationDbContext context, IConfiguration co
         return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower() && u.Ativo);
     }
 
-    public Task<bool> UsuarioExiste(string email)
+    public async Task<bool> UsuarioExiste(string email)
     {
-        throw new NotImplementedException();
+        return await _context.Usuarios.AnyAsync(u => u.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase) && u.Ativo);
     }
 }

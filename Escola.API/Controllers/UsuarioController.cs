@@ -16,6 +16,11 @@ public class UsuarioController(IUsuarioService usuarioService, IAuthenticate aut
     [HttpPost]
     public async Task<ActionResult> CriarUsuario(UsuarioPostDTO usuario)
     {
+        var usuarioExiste = await _authenticate.UsuarioExiste(usuario.Email);
+
+        if (usuarioExiste)
+            return BadRequest(new { Message = "Já existe um usuário vinculado a este e-mail" });
+
         var usuarioCriado = await _usuarioService.AddAsync(usuario);
         var token = _authenticate.GerarToken(usuarioCriado.Id, usuarioCriado.Email.ToLower(), usuarioCriado.Perfil);
         return Ok(new { Token = token, Nome = usuarioCriado.Nome });
