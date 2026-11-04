@@ -47,6 +47,14 @@ public class TurmaRepository(ApplicationDbContext context) : ITurmaRepository
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
+    public async Task<List<Turma>> GetTurmasByUsuarioId(int usuarioId)
+    {
+        return await _context.Turmas
+            .Include(x => x.Curso)
+            .Where(x => x.Ativo && x.Matriculas.Any(m => m.UsuarioId == usuarioId))
+            .ToListAsync();
+    }
+
     public async Task<Turma> UpdateAsync(Turma turma)
     {
         _context.Turmas.Update(turma);

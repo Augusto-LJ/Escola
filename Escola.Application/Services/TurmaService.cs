@@ -7,10 +7,11 @@ using Escola.Application.Interfaces;
 using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
 
-public class TurmaService(ITurmaRepository turmaRepository, ICursoRepository cursoRepository) : ITurmaService
+public class TurmaService(ITurmaRepository turmaRepository, ICursoRepository cursoRepository, IUsuarioRepository usuarioRepository) : ITurmaService
 {
     private readonly ITurmaRepository _turmaRepository = turmaRepository;
     private readonly ICursoRepository _cursoRepository = cursoRepository;
+    private readonly IUsuarioRepository _usuarioRepository = usuarioRepository;
 
     public async Task<TurmaGetDTO> AddAsync(TurmaPostDTO turma)
     {
@@ -89,6 +90,28 @@ public class TurmaService(ITurmaRepository turmaRepository, ICursoRepository cur
                 Descricao = turma.Curso.Descricao
             }
         };
+    }
+
+    public async Task<List<TurmaGetDetailDTO>> GetTurmasByUsuarioId(int usuarioId)
+    {
+        var usuario = await _usuarioRepository.GetByIdAsync(usuarioId) ?? throw new NotFoundException("Usuário não encontrado.");
+        var turmas = await _turmaRepository.GetTurmasByUsuarioId(usuarioId);
+        var turmaGetDetailDTO = new List<TurmaGetDetailDTO>();
+
+        turmaGetDetailDTO.AddRange(turmas.Select(t => new TurmaGetDetailDTO
+        {
+            Id = t.Id,
+            Nome = t.Nome,
+            Descricao = t.Descricao,
+            Curso = new CursoGetDTO
+            {
+                Id = t.Curso.Id,
+                Nome = t.Curso.Nome,
+                Descricao = t.Curso.Descricao
+            }
+        }));
+
+        return turmaGetDetailDTO;
     }
 
     public async Task<TurmaGetDTO> UpdateAsync(TurmaPutDTO turma)
