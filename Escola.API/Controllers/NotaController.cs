@@ -1,11 +1,13 @@
 ﻿using Escola.Application.DTOs.Nota;
 using Escola.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Escola.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "Administrador")]
 public class NotaController(INotaService notaService) : Controller
 {
     private readonly INotaService _notaService = notaService;

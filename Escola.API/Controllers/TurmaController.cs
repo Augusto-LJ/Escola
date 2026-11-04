@@ -1,11 +1,13 @@
 ﻿using Escola.Application.DTOs.Turma;
 using Escola.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Escola.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles="Administrador")]
 public class TurmaController(ITurmaService turmaService) : Controller
 {
     private readonly ITurmaService _turmaService = turmaService;
