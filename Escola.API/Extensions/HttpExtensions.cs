@@ -1,0 +1,19 @@
+﻿using Escola.API.Models;
+using Escola.Domain.Pagination;
+using System.Text.Json;
+
+namespace Escola.API.Extensions;
+
+public static class HttpExtensions
+{
+    public static void AddPaginationHeader<T>(this HttpResponse response, PaginationHeader header)
+    {
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        response.Headers.Add("Pagination", JsonSerializer.Serialize(header, jsonOptions));
+        response.Headers.Add("Access-Control-Expose-Headers", "Pagination");
+    }
+}
