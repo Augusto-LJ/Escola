@@ -1,4 +1,6 @@
-﻿using Escola.Application.DTOs.Curso;
+﻿using Escola.API.Extensions;
+using Escola.API.Models;
+using Escola.Application.DTOs.Curso;
 using Escola.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,9 +43,10 @@ public class CursoController(ICursoService cursoService) : Controller
     }
 
     [HttpGet]
-    public async Task<ActionResult> GetAllCursos()
+    public async Task<ActionResult> GetAllCursos([FromQuery] PaginationParams paginationParams)
     {
-        var cursos = await _cursoService.GetAllAsync();
-        return Ok(cursos);
+        var cursos = await _cursoService.GetAllAsync(paginationParams.PageNumber, paginationParams.PageSize);
+        Response.AddPaginationHeader(new PaginationHeader(paginationParams.PageNumber, paginationParams.PageSize, cursos.TotalCount, cursos.TotalPages));
+        return Ok(cursos); 
     }
 }
