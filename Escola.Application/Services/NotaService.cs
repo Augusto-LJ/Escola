@@ -20,7 +20,8 @@ public class NotaService(INotaRepository notaRepository, IMatriculaRepository ma
             MatriculaId = matriculaExistente.Id,
             ValorNota = nota.ValorNota,
             Aprovado = nota.ValorNota >= 60,
-            Ativo = true
+            Ativo = true,
+            DataNota = DateTime.UtcNow
         };
 
         var notaCriada = await _notaRepository.AddAsync(novaNota) ?? throw new BadRequestException("Não foi possível criar a nota");
