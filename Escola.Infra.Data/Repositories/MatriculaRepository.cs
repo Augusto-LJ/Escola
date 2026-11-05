@@ -33,7 +33,10 @@ public class MatriculaRepository(ApplicationDbContext context) : IMatriculaRepos
 
     public async Task<List<Matricula>> GetAllAsync()
     {
-        return await _context.Matriculas.Where(x => x.Ativo).ToListAsync();
+        return await _context.Matriculas
+            .Include(m => m.Usuario)
+            .Include(m => m.Turma)
+            .Where(x => x.Ativo).ToListAsync();
     }
 
     public async Task<Matricula> GetByIdAsync(int id)
