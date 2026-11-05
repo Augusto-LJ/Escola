@@ -105,4 +105,21 @@ public class NotaService(INotaRepository notaRepository, IMatriculaRepository ma
             DataNota = notaAtualizada.DataNota
         };
     }
+
+    public async Task<List<NotaGetDTO>> GetNotasByTurmaUsuarioId(int turmaId, int usuarioId)
+    {
+        var notas = await _notaRepository.GetNotasByTurmaUsuarioId(turmaId, usuarioId);
+        var notasDto = new List<NotaGetDTO>();
+
+        notasDto.AddRange(notas.Select(n => new NotaGetDTO
+        {
+            Id = n.Id,
+            MatriculaId = n.MatriculaId,
+            ValorNota = n.ValorNota,
+            Aprovado = n.Aprovado,
+            DataNota = n.DataNota
+        }));
+
+        return notasDto;
+    }
 }

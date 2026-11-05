@@ -10,4 +10,5 @@ public interface INotaService
     Task<NotaGetDTO> AddAsync(NotaPostDTO nota);
     Task<NotaGetDTO> UpdateAsync(NotaPutDTO nota);
     Task<NotaGetDTO> DeleteAsync(int id);
+    Task<List<NotaGetDTO>> GetNotasByTurmaUsuarioId(int turmaId, int usuarioId);
 }

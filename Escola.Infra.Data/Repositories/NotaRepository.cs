@@ -41,6 +41,14 @@ public class NotaRepository(ApplicationDbContext context) : INotaRepository
         return await _context.Notas.Where(x => x.Ativo).FirstOrDefaultAsync(c => c.Id == id);
     }
 
+    public async Task<List<Nota>> GetNotasByTurmaUsuarioId(int turmaId, int usuarioId)
+    {
+        return await _context.Notas
+            .Include(n => n.Matricula)
+            .Where(n => n.Ativo && n.Matricula.TurmaId == turmaId && n.Matricula.UsuarioId == usuarioId)
+            .ToListAsync();
+    }
+
     public async Task<Nota> UpdateAsync(Nota nota)
     {
         _context.Notas.Update(nota);
