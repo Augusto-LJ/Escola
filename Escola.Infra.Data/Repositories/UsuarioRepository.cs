@@ -1,6 +1,8 @@
 ﻿using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
+using Escola.Domain.Pagination;
 using Escola.Infra.Data.Context;
+using Escola.Infra.Data.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Escola.Infra.Data.Repositories;
@@ -36,9 +38,10 @@ public class UsuarioRepository(ApplicationDbContext context) : IUsuarioRepositor
         return await _context.Usuarios.AnyAsync(x => x.Ativo);
     }
 
-    public async Task<List<Usuario>> GetAllAsync()
+    public async Task<PagedList<Usuario>> GetAllAsync(int pageNumber, int pageSize)
     {
-        return await _context.Usuarios.Where(x => x.Ativo).ToListAsync();
+        var query = _context.Usuarios.Where(x => x.Ativo).AsNoTracking();
+        return await PaginationHelper.CreateAsync(query, pageNumber, pageSize);
     }
 
     public async Task<Usuario> GetByIdAsync(int id)

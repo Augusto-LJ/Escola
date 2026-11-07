@@ -6,6 +6,7 @@ using Escola.Application.Exceptions;
 using Escola.Application.Interfaces;
 using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
+using Escola.Domain.Pagination;
 
 public class TurmaService(ITurmaRepository turmaRepository, ICursoRepository cursoRepository, IUsuarioRepository usuarioRepository) : ITurmaService
 {
@@ -49,9 +50,9 @@ public class TurmaService(ITurmaRepository turmaRepository, ICursoRepository cur
         };
     }
 
-    public async Task<List<TurmaGetDetailDTO>> GetAllAsync()
+    public async Task<PagedList<TurmaGetDetailDTO>> GetAllAsync(int pageNumber, int pageSize)
     {
-        var todasTurmas = await _turmaRepository.GetAllAsync();
+        var todasTurmas = await _turmaRepository.GetAllAsync(pageNumber, pageSize);
 
         var turmasDTO = new List<TurmaGetDetailDTO>();
 
@@ -68,7 +69,7 @@ public class TurmaService(ITurmaRepository turmaRepository, ICursoRepository cur
             }
         }));
 
-        return turmasDTO;
+        return new PagedList<TurmaGetDetailDTO>(turmasDTO, todasTurmas.CurrentPage, todasTurmas.PageSize, todasTurmas.TotalCount);
     }
 
     public async Task<TurmaGetDetailDTO> GetByIdAsync(int id)
@@ -92,10 +93,10 @@ public class TurmaService(ITurmaRepository turmaRepository, ICursoRepository cur
         };
     }
 
-    public async Task<List<TurmaGetDetailDTO>> GetTurmasByUsuarioId(int usuarioId)
+    public async Task<PagedList<TurmaGetDetailDTO>> GetTurmasByUsuarioId(int usuarioId, int pageNumber, int pageSize)
     {
         var usuario = await _usuarioRepository.GetByIdAsync(usuarioId) ?? throw new NotFoundException("Usuário não encontrado.");
-        var turmas = await _turmaRepository.GetTurmasByUsuarioId(usuarioId);
+        var turmas = await _turmaRepository.GetTurmasByUsuarioId(usuarioId, pageNumber, pageSize);
         var turmaGetDetailDTO = new List<TurmaGetDetailDTO>();
 
         turmaGetDetailDTO.AddRange(turmas.Select(t => new TurmaGetDetailDTO
@@ -111,7 +112,7 @@ public class TurmaService(ITurmaRepository turmaRepository, ICursoRepository cur
             }
         }));
 
-        return turmaGetDetailDTO;
+        return new PagedList<TurmaGetDetailDTO>(turmaGetDetailDTO, turmas.CurrentPage, turmas.PageSize, turmas.TotalCount);
     }
 
     public async Task<TurmaGetDTO> UpdateAsync(TurmaPutDTO turma)

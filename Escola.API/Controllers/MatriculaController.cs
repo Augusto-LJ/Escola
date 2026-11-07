@@ -1,5 +1,8 @@
-﻿using Escola.Application.DTOs.Matricula;
+﻿using Escola.API.Extensions;
+using Escola.API.Models;
+using Escola.Application.DTOs.Matricula;
 using Escola.Application.Interfaces;
+using Escola.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,9 +44,10 @@ public class MatriculaController(IMatriculaService matriculaService) : Controlle
     }
 
     [HttpGet]
-    public async Task<ActionResult> GetAllMatriculas()
+    public async Task<ActionResult> GetAllMatriculas([FromQuery] PaginationParams paginationParams)
     {
-        var matriculas = await _matriculaService.GetAllAsync();
+        var matriculas = await _matriculaService.GetAllAsync(paginationParams.PageNumber, paginationParams.PageSize);
+        Response.AddPaginationHeader(new PaginationHeader(paginationParams.PageNumber, matriculas.TotalPages, paginationParams.PageSize, matriculas.TotalCount));
         return Ok(matriculas);
     }
 }

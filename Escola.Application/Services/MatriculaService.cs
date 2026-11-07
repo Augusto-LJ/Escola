@@ -5,6 +5,7 @@ using Escola.Application.Exceptions;
 using Escola.Application.Interfaces;
 using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
+using Escola.Domain.Pagination;
 
 namespace Escola.Application.Services;
 
@@ -52,9 +53,9 @@ public class MatriculaService(IMatriculaRepository matriculaRepository, ITurmaRe
         };
     }
 
-    public async Task<List<MatriculaGetDetailDTO>> GetAllAsync()
+    public async Task<PagedList<MatriculaGetDetailDTO>> GetAllAsync(int pageNumber, int pageSize)
     {
-        var todasMatriculas = await _matriculaRepository.GetAllAsync();
+        var todasMatriculas = await _matriculaRepository.GetAllAsync(pageNumber, pageSize);
 
         if (todasMatriculas == null || !todasMatriculas.Any())
             throw new NotFoundException("Nenhuma matrícula encontrada");
@@ -81,7 +82,7 @@ public class MatriculaService(IMatriculaRepository matriculaRepository, ITurmaRe
             Ativo = m.Ativo
         }));
 
-        return matriculasDTO;
+        return new PagedList<MatriculaGetDetailDTO>(matriculasDTO, todasMatriculas.CurrentPage, todasMatriculas.PageSize, todasMatriculas.TotalCount);
     }
 
     public async Task<MatriculaGetDetailDTO> GetByIdAsync(int id)

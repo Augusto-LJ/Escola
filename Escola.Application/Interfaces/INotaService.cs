@@ -1,14 +1,15 @@
 ﻿using Escola.Application.DTOs.Nota;
 using Escola.Domain.Entities;
+using Escola.Domain.Pagination;
 
 namespace Escola.Application.Interfaces;
 
 public interface INotaService
 {
     Task<NotaGetDTO> GetByIdAsync(int id);
-    Task<List<NotaGetDTO>> GetAllAsync();
+    Task<PagedList<NotaGetDTO>> GetAllAsync(int pageNumber, int pageSize);
     Task<NotaGetDTO> AddAsync(NotaPostDTO nota);
     Task<NotaGetDTO> UpdateAsync(NotaPutDTO nota);
     Task<NotaGetDTO> DeleteAsync(int id);
-    Task<List<NotaGetDTO>> GetNotasByTurmaUsuarioId(int turmaId, int usuarioId);
+    Task<PagedList<NotaGetDTO>> GetNotasByTurmaUsuarioId(int turmaId, int usuarioId, int pageNumber, int pageSize);
 }

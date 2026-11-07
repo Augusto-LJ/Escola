@@ -5,6 +5,7 @@ using Escola.Application.Exceptions;
 using Escola.Application.Interfaces;
 using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
+using Escola.Domain.Pagination;
 
 public class NotaService(INotaRepository notaRepository, IMatriculaRepository matriculaRepository) : INotaService
 {
@@ -50,9 +51,9 @@ public class NotaService(INotaRepository notaRepository, IMatriculaRepository ma
         };
     }
 
-    public async Task<List<NotaGetDTO>> GetAllAsync()
+    public async Task<PagedList<NotaGetDTO>> GetAllAsync(int pageNumber, int pageSize)
     {
-        var todasNotas = await _notaRepository.GetAllAsync();
+        var todasNotas = await _notaRepository.GetAllAsync(pageNumber, pageSize);
 
         var notasDTO = new List<NotaGetDTO>();
 
@@ -65,7 +66,7 @@ public class NotaService(INotaRepository notaRepository, IMatriculaRepository ma
             DataNota = n.DataNota
         }));
 
-        return notasDTO;
+        return new PagedList<NotaGetDTO>(notasDTO, todasNotas.CurrentPage, todasNotas.PageSize, todasNotas.TotalCount);
     }
 
     public async Task<NotaGetDTO> GetByIdAsync(int id)
@@ -106,9 +107,9 @@ public class NotaService(INotaRepository notaRepository, IMatriculaRepository ma
         };
     }
 
-    public async Task<List<NotaGetDTO>> GetNotasByTurmaUsuarioId(int turmaId, int usuarioId)
+    public async Task<PagedList<NotaGetDTO>> GetNotasByTurmaUsuarioId(int turmaId, int usuarioId, int pageNumber, int pageSize)
     {
-        var notas = await _notaRepository.GetNotasByTurmaUsuarioId(turmaId, usuarioId);
+        var notas = await _notaRepository.GetNotasByTurmaUsuarioId(turmaId, usuarioId, pageNumber, pageSize);
         var notasDto = new List<NotaGetDTO>();
 
         notasDto.AddRange(notas.Select(n => new NotaGetDTO
@@ -120,6 +121,6 @@ public class NotaService(INotaRepository notaRepository, IMatriculaRepository ma
             DataNota = n.DataNota
         }));
 
-        return notasDto;
+        return new PagedList<NotaGetDTO>(notasDto, notas.CurrentPage, notas.PageSize, notas.TotalCount);
     }
 }

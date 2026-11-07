@@ -1,4 +1,6 @@
-﻿using Escola.Application.DTOs.Turma;
+﻿using Escola.API.Extensions;
+using Escola.API.Models;
+using Escola.Application.DTOs.Turma;
 using Escola.Application.Interfaces;
 using Escola.Infra.IoC;
 using Microsoft.AspNetCore.Authorization;
@@ -46,18 +48,20 @@ public class TurmaController(ITurmaService turmaService) : Controller
 
     [HttpGet]
     [Authorize(Roles = "Administrador")]
-    public async Task<ActionResult> GetAllTurmas()
+    public async Task<ActionResult> GetAllTurmas([FromQuery] PaginationParams paginationParams)
     {
-        var turmas = await _turmaService.GetAllAsync();
+        var turmas = await _turmaService.GetAllAsync(paginationParams.PageNumber, paginationParams.PageSize);
+        Response.AddPaginationHeader(new PaginationHeader(paginationParams.PageNumber, turmas.TotalPages, paginationParams.PageSize, turmas.TotalCount));
         return Ok(turmas);
     }
 
     [HttpGet("usuario")]
     [Authorize(Roles = "Aluno,Administrador")]
-    public async Task<ActionResult> GetTurmasByUsuarioId()
+    public async Task<ActionResult> GetTurmasByUsuarioId([FromQuery] PaginationParams paginationParams)
     {
         var usuarioId = User.GetUsuarioId();
-        var turmas = await _turmaService.GetTurmasByUsuarioId(usuarioId);
+        var turmas = await _turmaService.GetTurmasByUsuarioId(usuarioId, paginationParams.PageNumber, paginationParams.PageSize);
+        Response.AddPaginationHeader(new PaginationHeader(paginationParams.PageNumber, turmas.TotalPages, paginationParams.PageSize, turmas.TotalCount));
         return Ok(turmas);
     }
 }
