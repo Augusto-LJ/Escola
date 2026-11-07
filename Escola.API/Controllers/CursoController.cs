@@ -46,7 +46,7 @@ public class CursoController(ICursoService cursoService) : Controller
     public async Task<ActionResult> GetAllCursos([FromQuery] PaginationParams paginationParams)
     {
         var cursos = await _cursoService.GetAllAsync(paginationParams.PageNumber, paginationParams.PageSize);
-        Response.AddPaginationHeader(new PaginationHeader(paginationParams.PageNumber, paginationParams.PageSize, cursos.TotalCount, cursos.TotalPages));
+        Response.AddPaginationHeader(new PaginationHeader(paginationParams.PageNumber, cursos.TotalPages, paginationParams.PageSize, cursos.TotalCount));
         return Ok(cursos); 
     }
 }
