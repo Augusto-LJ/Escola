@@ -69,13 +69,15 @@ public class MatriculaService(IMatriculaRepository matriculaRepository, ITurmaRe
             {
                 Id = m.Usuario.Id,
                 Nome = m.Usuario.Nome,
-                Email = m.Usuario.Email
+                Email = m.Usuario.Email,
+                Perfil = m.Usuario.Perfil
             },
             Turma = new TurmaGetDTO
             {
                 Id = m.Turma.Id,
                 Nome = m.Turma.Nome,
-                Descricao = m.Turma.Descricao
+                Descricao = m.Turma.Descricao,
+                CursoId = m.Turma.CursoId
             },
             DataMatricula = m.DataMatricula,
             DataExpiracao = m.DataExpiracao,
@@ -96,13 +98,15 @@ public class MatriculaService(IMatriculaRepository matriculaRepository, ITurmaRe
             {
                 Id = matricula.Usuario.Id,
                 Nome = matricula.Usuario.Nome,
-                Email = matricula.Usuario.Email
+                Email = matricula.Usuario.Email,
+                Perfil = matricula.Usuario.Perfil
             },
             Turma = new TurmaGetDTO
             {
                 Id = matricula.Turma.Id,
                 Nome = matricula.Turma.Nome,
-                Descricao = matricula.Turma.Descricao
+                Descricao = matricula.Turma.Descricao,
+                CursoId = matricula.Turma.CursoId
             },
             DataMatricula = matricula.DataMatricula,
             DataExpiracao = matricula.DataExpiracao,
@@ -115,7 +119,6 @@ public class MatriculaService(IMatriculaRepository matriculaRepository, ITurmaRe
         var matriculaExistente = await _matriculaRepository.GetByIdAsync(matricula.Id) ?? throw new NotFoundException("Matrícula não encontrada");
         var turmaExistente = await _turmaRepository.GetByIdAsync(matricula.TurmaId) ?? throw new NotFoundException("Turma não encontrada");
 
-        matriculaExistente.Id = matricula.Id;
         matriculaExistente.TurmaId = turmaExistente.Id;
         matriculaExistente.DataExpiracao = matricula.DataExpiracao;
 

@@ -55,7 +55,7 @@ public class TurmaRepository(ApplicationDbContext context) : ITurmaRepository
     {
         var query = _context.Turmas
             .Include(x => x.Curso)
-            .Where(x => x.Ativo && x.Matriculas.Any(m => m.UsuarioId == usuarioId))
+            .Where(x => x.Ativo && x.Matriculas.Any(m => m.UsuarioId == usuarioId && m.Ativo))
             .AsNoTracking();
 
         return await PaginationHelper.CreateAsync(query, pageNumber, pageSize);

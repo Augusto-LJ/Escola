@@ -37,6 +37,7 @@ public class MatriculaRepository(ApplicationDbContext context) : IMatriculaRepos
     {
         var query = _context.Matriculas
             .Include(x => x.Usuario)
+            .Include(x => x.Turma)
             .Where(x => x.Ativo)
             .AsNoTracking();
 
@@ -45,7 +46,11 @@ public class MatriculaRepository(ApplicationDbContext context) : IMatriculaRepos
 
     public async Task<Matricula> GetByIdAsync(int id)
     {
-        return await _context.Matriculas.Where(x => x.Ativo).FirstOrDefaultAsync(c => c.Id == id);
+        return await _context.Matriculas
+            .Include(x => x.Usuario)
+            .Include(x => x.Turma)
+            .Where(x => x.Ativo)
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<Matricula> UpdateAsync(Matricula matricula)
