@@ -55,8 +55,9 @@ public static class DependencyInjection
         services.AddScoped<INotaService, NotaService>();
         services.AddScoped<ITurmaService, TurmaService>();
         services.AddScoped<IUsuarioService, UsuarioService>();
+        services.AddScoped<IAuthenticateService, AuthenticateService>();
 
-        services.AddScoped<IAuthenticate, AuthenticateService>();
+        services.AddScoped<IAuthenticate, AuthenticateProvider>();
 
         return services;
     }

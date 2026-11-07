@@ -1,6 +1,7 @@
 ﻿namespace Escola.Application.Services;
 
 using Escola.Application.DTOs.Usuario;
+using Escola.Application.Exceptions;
 using Escola.Application.Interfaces;
 using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
@@ -13,6 +14,11 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
 
     public async Task<UsuarioGetDTO> AddAsync(UsuarioPostDTO usuario)
     {
+        var usuarioExiste = await _usuarioRepository.UsuarioExiste(usuario.Email);
+
+        if (usuarioExiste)
+            return BadRequest(new { Message = "Já existe um usuário vinculado a este e-mail" });
+
         using var hmac = new HMACSHA512();
         byte[] senhaHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(usuario.Senha));
         byte[] senhaSalt = hmac.Key;
@@ -39,12 +45,17 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
         };
     }
 
+    private UsuarioGetDTO BadRequest(object value)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<UsuarioGetDTO> DeleteAsync(int id)
     {
         var usuarioDeletado = await _usuarioRepository.DeleteAsync(id);
 
         if (usuarioDeletado == null)
-            return null;
+            throw new NotFoundException("Usuário não encontrado.");
 
         return new UsuarioGetDTO
         {
@@ -81,7 +92,23 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
         var usuario = await _usuarioRepository.GetByIdAsync(id);
 
         if (usuario == null)
-            return null;
+            throw new NotFoundException("Usuário não encontrado.");
+
+        return new UsuarioGetDTO
+        {
+            Id = usuario.Id,
+            Nome = usuario.Nome,
+            Email = usuario.Email,
+            Perfil = usuario.Perfil
+        };
+    }
+
+    public async Task<UsuarioGetDTO> GetUsuarioByEmailAsync(string email)
+    {
+        var usuario = await _usuarioRepository.GetUsuarioByEmail(email);
+        
+        if (usuario == null)
+            throw new NotFoundException("Usuário não encontrado.");
 
         return new UsuarioGetDTO
         {
@@ -104,7 +131,7 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
         var usuarioAtualizado = await _usuarioRepository.UpdateAsync(usuarioParaAtualizar);
 
         if (usuarioAtualizado == null)
-            return null;
+            throw new NotFoundException("Usuário não encontrado.");
 
         return new UsuarioGetDTO
         {
