@@ -7,6 +7,7 @@ using Escola.Domain.Entities;
 using Escola.Domain.Interfaces;
 using Escola.Domain.Pagination;
 using System.Security.Cryptography;
+using System.Text;
 
 public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioService
 {
@@ -17,7 +18,7 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
         var usuarioExiste = await _usuarioRepository.UsuarioExiste(usuario.Email);
 
         if (usuarioExiste)
-            return BadRequest(new { Message = "Já existe um usuário vinculado a este e-mail" });
+            throw new BadRequestException("Já existe um usuário vinculado a este e-mail");
 
         using var hmac = new HMACSHA512();
         byte[] senhaHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(usuario.Senha));
@@ -43,11 +44,6 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
             Email = usuarioCriado.Email,
             Perfil = usuarioCriado.Perfil
         };
-    }
-
-    private UsuarioGetDTO BadRequest(object value)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<UsuarioGetDTO> DeleteAsync(int id)
@@ -144,5 +140,24 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
             Email = usuarioAtualizado.Email,
             Perfil = usuarioAtualizado.Perfil
         };
+    }
+
+    public async Task AlterarSenhaAsync(int usuarioId, AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto)
+    {
+        var usuario = await _usuarioRepository.GetByIdAsync(usuarioId);
+
+        if (usuario == null || !usuario.Ativo)
+            throw new NotFoundException("Usuário não encontrado.");
+
+        using var hmac = new HMACSHA512(usuario.PasswordSalt);
+        var hashInformado = hmac.ComputeHash(Encoding.UTF8.GetBytes(alterarSenhaUsuarioDto.SenhaAtual));
+
+        if (!hashInformado.SequenceEqual(usuario.PasswordHash))
+            throw new BadRequestException("Senha atual incorreta.");
+
+        using var hmacNovo = new HMACSHA512();
+        usuario.PasswordHash = hmacNovo.ComputeHash(Encoding.UTF8.GetBytes(alterarSenhaUsuarioDto.NovaSenha));
+        usuario.PasswordSalt = hmacNovo.Key;
+        await _usuarioRepository.UpdateAsync(usuario);
     }
 }

@@ -12,4 +12,5 @@ public interface IUsuarioService
     Task<UsuarioGetDTO> DeleteAsync(int id);
     Task<bool> ExisteUsuarioAsync();
     Task<UsuarioGetDTO> GetUsuarioByEmailAsync(string email);
+    Task AlterarSenhaAsync(int usuarioId, AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto);
 }

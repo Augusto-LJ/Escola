@@ -48,4 +48,12 @@ public class UsuarioController(IUsuarioService usuarioService, IAuthenticateServ
         await _usuarioService.UpdateAsync(User.GetUsuarioId(), usuario);
         return Ok(new { message = "Usuário atualizado com sucesso" });
     }
+
+    [HttpPut("alterar-senha")]
+    [Authorize]
+    public async Task<ActionResult> AlterarSenha(AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto)
+    {
+        await _usuarioService.AlterarSenhaAsync(User.GetUsuarioId(), alterarSenhaUsuarioDto);
+        return Ok(new { message = "Senha alterada com sucesso" });
+    }
 }
