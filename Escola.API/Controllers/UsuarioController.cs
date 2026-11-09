@@ -3,6 +3,7 @@ using Escola.API.Models;
 using Escola.Application.DTOs.Usuario;
 using Escola.Application.Interfaces;
 using Escola.Domain.Account;
+using Escola.Infra.IoC;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,5 +39,13 @@ public class UsuarioController(IUsuarioService usuarioService, IAuthenticateServ
         var usuarios = await _usuarioService.GetAllAsync(paginationParams.PageNumber, paginationParams.PageSize);
         Response.AddPaginationHeader(new PaginationHeader(usuarios.CurrentPage, usuarios.TotalPages, usuarios.PageSize, usuarios.TotalCount));
         return Ok(usuarios);
+    }
+
+    [HttpPut]
+    [Authorize]
+    public async Task<ActionResult> UpdateUsuario(UsuarioPutDTO usuario)
+    {
+        await _usuarioService.UpdateAsync(User.GetUsuarioId(), usuario);
+        return Ok(new { message = "Usuário atualizado com sucesso" });
     }
 }

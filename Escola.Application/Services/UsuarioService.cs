@@ -121,17 +121,21 @@ public class UsuarioService(IUsuarioRepository usuarioRepository) : IUsuarioServ
 
     public async Task<UsuarioGetDTO> UpdateAsync(int usuarioId, UsuarioPutDTO usuario)
     {
-        var usuarioParaAtualizar = new Usuario
+        var usuarioParaAtualizar = await _usuarioRepository.GetByIdAsync(usuarioId) ?? throw new NotFoundException("Usuário não encontrado.");
+
+        if (!usuario.Email.Equals(usuarioParaAtualizar.Email, StringComparison.CurrentCultureIgnoreCase))
         {
-            Id = usuarioId,
-            Nome = usuario.Nome,
-            Email = usuario.Email
-        };
+            var usuarioExiste = await _usuarioRepository.UsuarioExiste(usuario.Email);
 
-        var usuarioAtualizado = await _usuarioRepository.UpdateAsync(usuarioParaAtualizar);
+            if (usuarioExiste)
+                throw new BadRequestException("Já existe um usuário vinculado a este e-mail");
 
-        if (usuarioAtualizado == null)
-            throw new NotFoundException("Usuário não encontrado.");
+            usuarioParaAtualizar.Email = usuario.Email;
+        }
+
+        usuarioParaAtualizar.Nome = usuario.Nome;
+
+        var usuarioAtualizado = await _usuarioRepository.UpdateAsync(usuarioParaAtualizar) ?? throw new NotFoundException("Usuário não encontrado.");
 
         return new UsuarioGetDTO
         {
