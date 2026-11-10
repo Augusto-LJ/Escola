@@ -10,6 +10,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Nota> Notas { get; set; }
     public DbSet<Turma> Turmas { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<CodigoRecuperacaoSenha> CodigosRecuperacaoSenha { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
